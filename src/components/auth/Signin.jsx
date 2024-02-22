@@ -3,14 +3,17 @@ import Container from '../Container'
 import Title from '../form/Title'
 import FormInput from '../form/FormInput'
 import Submit from '../form/Submit'
-import { Link } from 'react-router-dom'
 import CustomLinks from '../CustomLinks'
+import { commonModalClasses } from '../../utils/theme'
+import FormContainer from '../form/FormContainer'
+
 
 export default function Signin() {
+    ;
     return (
-        <div className='fixed inset-0 bg-primary -z-10 flex justify-center items-center'>
+        <FormContainer>
             <Container>
-                <form className='bg-secondary rounded p-6 w-80 space-y-6'>
+                <form className={commonModalClasses + ' w-80'}>
                     <Title>Sign in</Title>
                     <FormInput label="Email" placeholder='hanumant@gmail.com' name='email' />
                     <FormInput label="Password" placeholder='********' name='Password' />
@@ -22,6 +25,6 @@ export default function Signin() {
                     </div>
                 </form>
             </Container>
-        </div>
+        </FormContainer>
     )
 }
