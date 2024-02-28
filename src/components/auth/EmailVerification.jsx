@@ -4,6 +4,7 @@ import Submit from "../form/Submit";
 import Title from "../form/Title";
 import FormContainer from "../form/FormContainer";
 import { commonModalClasses } from "../../utils/theme";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const OTP_LENGTH = 6;
 let currentOTPIndex;
@@ -12,7 +13,11 @@ export default function EmailVerification() {
     const [otp, setOtp] = useState(new Array(OTP_LENGTH).fill(""));
     const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
+    const navigate = useNavigate()
     const inputRef = useRef();
+
+    const { state } = useLocation();
+    const user = state?.user
 
     const focusNextInputField = (index) => {
         setActiveOtpIndex(index + 1);
@@ -42,14 +47,25 @@ export default function EmailVerification() {
         }
     };
 
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+
+    }
+
     useEffect(() => {
         inputRef.current?.focus();
     }, [activeOtpIndex]);
 
+    useEffect(() => {
+        if (!user) navigate('Not-found')
+    }, [user]);
+
+    // if (!user) return null;
     return (
         <FormContainer>
             <Container>
-                <form className={commonModalClasses}>
+                <form onSubmit={handleSubmit} className={commonModalClasses}>
                     <div>
                         <Title>Please enter the OTP to verify your account</Title>
                         <p className="text-center dark:text-dark-subtle text-light-subtle">

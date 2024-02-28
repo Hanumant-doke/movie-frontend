@@ -8,7 +8,8 @@ export default function FormInput({ name, placeholder, label, ...rest }) {
             <input type='text' id={name} name={name} className='bg-transparent rounded border-2 dark:border-dark-subtle
             border-light-subtle 
                     dark:focus:border-white focus:border-primary p-1 dark:text-white  w-full text-lg outline-none'
-                {...rest} placeholder={placeholder}
+                {...rest}
+                placeholder={placeholder}
             />
         </div>
     )
