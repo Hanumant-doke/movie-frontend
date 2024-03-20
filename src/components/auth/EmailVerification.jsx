@@ -5,16 +5,28 @@ import Title from "../form/Title";
 import FormContainer from "../form/FormContainer";
 import { commonModalClasses } from "../../utils/theme";
 import { useLocation, useNavigate } from "react-router-dom";
+import { verifyUserEmail } from "../../api/auth";
+import { useNotification } from "../../hooks";
 
 const OTP_LENGTH = 6;
 let currentOTPIndex;
 
+const isValidOtp = (otp) => {
+    let valid = false
+    for (let val of otp) {
+        valid = !isNaN(parseInt(val))
+        if (!valid) break;
+    }
+
+    return valid
+}
 export default function EmailVerification() {
     const [otp, setOtp] = useState(new Array(OTP_LENGTH).fill(""));
     const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
     const navigate = useNavigate()
     const inputRef = useRef();
+    const { updateNotification } = useNotification()
 
     const { state } = useLocation();
     const user = state?.user
@@ -48,9 +60,13 @@ export default function EmailVerification() {
     };
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
+        if (!isValidOtp(otp)) return updateNotification('error', 'invalid OTP');
 
+        const { error, message } = await verifyUserEmail({ OTP: otp.join(''), userId: user.id })
+        if (error) return updateNotification('error', error);
+        updateNotification('success', message);
     }
 
     useEffect(() => {
@@ -91,7 +107,7 @@ export default function EmailVerification() {
                         })}
                     </div>
 
-                    <Submit value="Send Link" />
+                    <Submit value="Verify Account" />
                 </form>
             </Container>
         </FormContainer>
