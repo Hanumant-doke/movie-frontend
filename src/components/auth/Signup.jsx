@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Container from '../Container'
 import Title from '../form/Title'
 import FormInput from '../form/FormInput'
@@ -8,16 +8,16 @@ import { commonModalClasses } from '../../utils/theme'
 import FormContainer from '../form/FormContainer'
 import { createUser } from '../../api/auth'
 import { useNavigate } from 'react-router-dom'
-import { useNotification } from '../../hooks'
+import { useAuth, useNotification } from '../../hooks'
+import { isValiadEmail } from '../../utils/helper'
 
 
 const validateUserInfo = ({ name, email, password }) => {
-    const isValidEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     const isValidName = /^[a-z A-Z]+$/;
     if (!name.trim()) return { ok: false, error: "Name is  missing!" }
     if (!isValidName.test(name)) return { ok: false, error: "Invalid name" }
     if (!email.trim()) return { ok: false, error: "Email is  missing!" }
-    if (!isValidEmail.test(email)) return { ok: false, error: "Invalid email!" }
+    if (!isValiadEmail(email)) return { ok: false, error: "Invalid email!" }
     if (!password.trim()) return { ok: false, error: "Password is  missing!" }
     if (password.length < 8) return { ok: false, error: "Password is min 8 char!" }
     return { ok: true }
@@ -33,6 +33,8 @@ export default function Signup() {
     const navigate = useNavigate();
 
     const { updateNotification } = useNotification()
+    const { authInfo } = useAuth();
+    const { isLoggedIn } = authInfo;
 
     const { name, email, password } = userInfo;
 
@@ -49,6 +51,12 @@ export default function Signup() {
         if (response.error) return console.log(response.error);
         navigate("/auth/verification", { state: { user: response.user }, replace: true })
     }
+
+    useEffect(() => {
+        if (isLoggedIn)
+            navigate("/")
+    }, [isLoggedIn])
+
     return (
         <FormContainer>
             <Container>
