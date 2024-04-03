@@ -66,10 +66,10 @@ export const forgetPassword = async (email) => {
     }
 }
 
-export const verifyPasswordResetToken = async (email) => {
+export const verifyPasswordResetToken = async (token, userId) => {
     try {
         const { data } = await client.post("/user/verify-pass-reset-token", {
-            email
+            token, userId
         });
         return data;
     } catch (error) {
@@ -80,3 +80,14 @@ export const verifyPasswordResetToken = async (email) => {
     }
 }
 
+export const resetPassword = async (passwordInfo) => {
+    try {
+        const { data } = await client.post("/user/reset-password", passwordInfo);
+        return data;
+    } catch (error) {
+        const { response } = error;
+        if (response?.data) return response.data;
+
+        return { error: error.message || error }
+    }
+}
